@@ -1,0 +1,9 @@
+name: elgato
+
+environment:
+  sdk: '>=2.6.0 <3.0.0'
+
+dependencies:
+  dcli: ^0.33.6
+  http: ^0.12.2
+  multicast_dns: ^0.2.2
