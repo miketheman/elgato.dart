@@ -97,11 +97,11 @@ little more about Dart, and because it was fun!
 ## What Else?
 (a collection of ideas that could improve this)
 
-* I'm not a professional Dart developer - it's entirely possble there's better
+* I'm not a professional Dart developer - it's entirely possible there's better
   implementations or ways to structure the code - assistance is welcome!
   Including tests! :grin:
 * At some point, this could be expanded to interact with other Elgato products,
-  but starting with the only one I have right now - the [Key Light Air][].
+  but starting with the only one I have right now - the [Key Light Air].
 * There's no current option to remove the cache file if the IP changes, so
   removing `$HOME_FOLDER/.elgato.dart.cache` and re-running the tool will
   discover the IP of the light again and cache it. The cache is used to speed
