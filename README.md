@@ -12,7 +12,7 @@ I spend a non-trivial amount of time on video calls for work and for personal
 life now, and oftentimes have breaks between calls during which I don't want
 the light on.
 
-I Looked for a way to control the light's on/off behavior from my command line,
+I looked for a way to control the light's on/off behavior from my command line,
 and didn't seem to find one, so I built one.
 
 ## Why?
@@ -24,10 +24,10 @@ Also, when flipped on, it lights up to its most powerful setting briefly, and
 then settles back to whatever configured setting I had it before I powered it
 down.
 
-Elgato provides a couple of interfaces - one is the [macOS Control Center][]
-which doesn't provide a single on/off toggle, and they provide [Android][]
-and [iOS][] apps that **do** have an on/off toggle, but I don't want to have
-pull my phone out every time I want to turn the ligths on and off.
+Elgato provides a couple of interfaces - one is the [macOS Control Center][],
+and they provide [Android][] and [iOS][] apps, but I don't want to have
+pull my phone out every time I want to turn the ligths on and off, and the
+desktop interface is two clicks, and I'm lazy.
 
 There's also the [Elgato Stream Deck][] controllers, but even at the smallest
 size it costs about $80USD, and I didn't want to spend that much on a light
