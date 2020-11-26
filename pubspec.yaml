@@ -4,6 +4,6 @@ environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  dcli: ^0.33.6
+  dcli: ^0.34.0
   http: ^0.12.2
   multicast_dns: ^0.2.2
