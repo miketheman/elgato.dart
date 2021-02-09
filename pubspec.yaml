@@ -5,5 +5,5 @@ environment:
 
 dependencies:
   dcli: ^0.41.0
-  http: ^0.12.2
+  http: ^0.13.0
   multicast_dns: ^0.2.2
