@@ -9,7 +9,7 @@ import 'package:multicast_dns/multicast_dns.dart';
 final cacheFile = join(HOME, ".elgato.dart.cache");
 
 String lightIpPort = "";
-String url = "http://$lightIpPort/elgato/lights";
+Uri url = Uri.parse("http://$lightIpPort/elgato/lights");
 
 /// Discover Elgato lights on the network
 findLights() async {
