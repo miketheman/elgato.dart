@@ -63,14 +63,14 @@ packages:
       name: csv
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0-nullsafety.0"
+    version: "5.0.0"
   dcli:
     dependency: "direct main"
     description:
       name: dcli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.51.5"
+    version: "1.0.4"
   equatable:
     dependency: transitive
     description:
@@ -119,7 +119,7 @@ packages:
       name: ini
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0-beta"
+    version: "2.1.0"
   json_annotation:
     dependency: transitive
     description:
@@ -190,13 +190,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  pubspec2:
+  pubspec:
     dependency: transitive
     description:
-      name: pubspec2
+      name: pubspec
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.1"
   quiver:
     dependency: transitive
     description:
