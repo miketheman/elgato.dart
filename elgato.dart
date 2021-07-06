@@ -6,7 +6,7 @@ import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
 import 'package:multicast_dns/multicast_dns.dart';
 
-// We store the results of the IP lookup in a file for future speedups
+// Store the results of the IP lookup locally to speed things up
 final cacheFile = join(HOME, ".elgato.dart.cache");
 
 var lightIpPorts = [];
@@ -31,21 +31,20 @@ findLights() async {
   client.stop();
 }
 
-// Flips zeroes and ones
+// Flip zeroes and ones
 flipInt(inputInt) {
   return inputInt = 1 - inputInt;
 }
 
-/// Flips the lights
+/// Switch a light
 Future<bool> flipSwitch(var url) async {
   var rawResponse;
 
   try {
-    // Await the http get response, then decode the json-formatted response.
+    // Await the HTTP GET response, then decode the JSON-formatted response
     rawResponse = await http.get(url).timeout(const Duration(seconds: 3));
   } on TimeoutException {
-    // If we didn't get a response, bail.
-    print('timed out calling lights, exiting...');
+    print('Timed out calling lights, exiting...');
     return false;
   } on SocketException catch (e) {
     print("Failed to connect to light, error:\n${e}");
@@ -56,7 +55,7 @@ Future<bool> flipSwitch(var url) async {
   // Flip the light's `on` value
   currentState['lights'].forEach((light) => light['on'] = flipInt(light['on']));
 
-  // Now PUT the `currentState` back to the device
+  // Update the light with the newly flipped value
   await http.put(url, body: convert.jsonEncode(currentState));
 
   return true;
@@ -69,12 +68,12 @@ void main() async {
     await findLights();
     if (cacheFile.isNotEmpty) {
       cacheFile.write(lightIpPorts.join('\n'));
-      print("wrote ${lightIpPorts.join(', ')} to ${cacheFile}.");
+      print("Wrote ${lightIpPorts.join(', ')} to ${cacheFile}.");
     }
   }
 
   if (lightIpPorts.isEmpty) {
-    print("no lights found in ${cacheFile} file, exiting...");
+    print("No lights found, exiting...");
     exit(2);
   }
 
