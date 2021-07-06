@@ -37,30 +37,29 @@ flipInt(inputInt) {
 }
 
 /// Flips the lights
-flipSwitch() async {
+Future<bool> flipSwitch(var url) async {
   var rawResponse;
 
-  for (var url in urls) {
-    try {
-      // Await the http get response, then decode the json-formatted response.
-      rawResponse = await http.get(url).timeout(const Duration(seconds: 3));
-    } on TimeoutException {
-      // If we didn't get a response, bail.
-      print('timed out calling lights, exiting...');
-      exit(2);
-    } on SocketException catch (e) {
-      print("Failed to connect to light, error:\n${e}");
-      exit(2);
-    }
-    var currentState = convert.jsonDecode(rawResponse.body);
-
-    // Flip the light's `on` value
-    currentState['lights']
-        .forEach((light) => light['on'] = flipInt(light['on']));
-
-    // Now PUT the `currentState` back to the device
-    await http.put(url, body: convert.jsonEncode(currentState));
+  try {
+    // Await the http get response, then decode the json-formatted response.
+    rawResponse = await http.get(url).timeout(const Duration(seconds: 3));
+  } on TimeoutException {
+    // If we didn't get a response, bail.
+    print('timed out calling lights, exiting...');
+    return false;
+  } on SocketException catch (e) {
+    print("Failed to connect to light, error:\n${e}");
+    return false;
   }
+  var currentState = convert.jsonDecode(rawResponse.body);
+
+  // Flip the light's `on` value
+  currentState['lights'].forEach((light) => light['on'] = flipInt(light['on']));
+
+  // Now PUT the `currentState` back to the device
+  await http.put(url, body: convert.jsonEncode(currentState));
+
+  return true;
 }
 
 void main() async {
@@ -79,5 +78,11 @@ void main() async {
     exit(2);
   }
 
-  flipSwitch();
+  // Execute flipSwitch() for all URLs in parallell
+  Future.wait(urls.map((url) => flipSwitch(url))).then((List<bool> retValues) {
+    // Return exit code 2 if any of the lights failed to flip
+    if (retValues.any((x) => x == false)) {
+      exit(2);
+    }
+  });
 }
