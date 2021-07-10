@@ -38,16 +38,16 @@ flipInt(inputInt) {
 
 /// Switch a light
 Future<bool> flipSwitch(var url) async {
-  var rawResponse;
+  http.Response rawResponse;
 
   try {
     // Await the HTTP GET response, then decode the JSON-formatted response
     rawResponse = await http.get(url).timeout(const Duration(seconds: 3));
   } on TimeoutException {
-    print('Timed out calling lights, exiting...');
+    printerr('Timed out calling lights, exiting...');
     return false;
   } on SocketException catch (e) {
-    print("Failed to connect to light, error:\n${e}");
+    printerr("Failed to connect to light, error:\n$e");
     return false;
   }
   var currentState = convert.jsonDecode(rawResponse.body);
@@ -68,12 +68,12 @@ void main() async {
     await findLights();
     if (cacheFile.isNotEmpty) {
       cacheFile.write(lightIpPorts.join('\n'));
-      print("Wrote ${lightIpPorts.join(', ')} to ${cacheFile}.");
+      print("Wrote ${lightIpPorts.join(', ')} to $cacheFile.");
     }
   }
 
   if (lightIpPorts.isEmpty) {
-    print("No lights found, exiting...");
+    printerr("No lights found, exiting...");
     exit(2);
   }
 
