@@ -2,19 +2,19 @@ import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:io';
 
+import 'package:args/command_runner.dart';
 import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
 import 'package:multicast_dns/multicast_dns.dart';
 
 // Store the results of the IP lookup locally to speed things up
-final cacheFile = join(HOME, ".elgato.dart.cache");
+final cacheFile = join(HOME, '.elgato.dart.cache');
 
-var lightIpPorts = [];
-var urls = lightIpPorts.map((x) => Uri.parse('http://$x/elgato/lights'));
+// Discover lights on the local network
+Future<List<String>> discoverLights() async {
+  var lightIpPorts = <String>[];
 
-/// Discover Elgato lights on the network
-findLights() async {
-  final String svcName = "_elg";
+  final String svcName = '_elg';
   final MDnsClient client = MDnsClient();
   await client.start();
 
@@ -29,59 +29,193 @@ findLights() async {
     }
   }
   client.stop();
+
+  return lightIpPorts;
 }
 
-// Flip zeroes and ones
-flipInt(inputInt) {
-  return inputInt = 1 - inputInt;
+Future<List<Uri>> getLightUrls() async {
+  var lightIpPorts = [];
+
+  // Check for a cache file
+  if (exists(cacheFile)) {
+    read(cacheFile).forEach((line) => lightIpPorts.add(line));
+  } else {
+    lightIpPorts = await discoverLights();
+
+    // Update the cache
+    cacheFile.write(lightIpPorts.join('\n'));
+    print('Wrote [${lightIpPorts.join(', ')}] to $cacheFile');
+  }
+
+  if (lightIpPorts.isEmpty) {
+    print('No light(s) found, exiting...');
+    exit(2);
+  }
+
+  return lightIpPorts.map((x) => Uri.parse('http://$x/elgato/lights')).toList();
 }
 
-/// Switch a light
-Future<bool> flipSwitch(var url) async {
+// Send an operation to a particular light
+Future<void> send(var op, var url) async {
   http.Response rawResponse;
 
   try {
     // Await the HTTP GET response, then decode the JSON-formatted response
     rawResponse = await http.get(url).timeout(const Duration(seconds: 3));
   } on TimeoutException {
-    printerr('Timed out calling lights, exiting...');
-    return false;
-  } on SocketException catch (e) {
-    printerr("Failed to connect to light, error:\n$e");
-    return false;
+    printerr('Timed out getting information from light at [$url], exiting...');
+    exit(2);
+  } on SocketException catch (error) {
+    printerr('Failed to connect to light at [$url], error:\n$error');
+    exit(2);
   }
   var currentState = convert.jsonDecode(rawResponse.body);
 
-  // Flip the light's `on` value
-  currentState['lights'].forEach((light) => light['on'] = flipInt(light['on']));
+  // Update the state object with the operation
+  // NB: This refers to one light only, contrary to what the key name indicates
+  currentState['lights'].forEach(op);
 
-  // Update the light with the newly flipped value
   await http.put(url, body: convert.jsonEncode(currentState));
-
-  return true;
 }
 
-void main() async {
-  if (exists(cacheFile)) {
-    read(cacheFile).forEach((line) => lightIpPorts.add(line));
-  } else {
-    await findLights();
-    if (cacheFile.isNotEmpty) {
-      cacheFile.write(lightIpPorts.join('\n'));
-      print("Wrote ${lightIpPorts.join(', ')} to $cacheFile.");
-    }
-  }
+// Send an operation to all available lights
+Future<void> manageLights(var op) async {
+  var urls = await getLightUrls();
+  Future.wait(urls.map((url) => send(op, url)));
+}
 
-  if (lightIpPorts.isEmpty) {
-    printerr("No lights found, exiting...");
-    exit(2);
-  }
+void main(List<String> args) async {
+  // Fetch the name of the file being invoked (elgato.dart, elgato.exe, etc.)
+  var filename = Platform.script.toFilePath().split('/').last;
 
-  // Execute flipSwitch() for all URLs in parallell
-  Future.wait(urls.map((url) => flipSwitch(url))).then((List<bool> retValues) {
-    // Return exit code 2 if any of the lights failed to flip
-    if (retValues.any((x) => x == false)) {
-      exit(2);
-    }
-  });
+  // If no command is specified, default to toggle the light(s)
+  args = args.isEmpty ? ['toggle'] : args;
+
+  // Configure CLI commands and options
+  CommandRunner(filename, 'A CLI for operating Elgato lights')
+    ..addCommand(OnCommand())
+    ..addCommand(OffCommand())
+    ..addCommand(ToggleCommand())
+    ..addCommand(IncreaseCommand())
+    ..addCommand(DecreaseCommand())
+    ..run(args).catchError((error) {
+      if (error is! UsageException) throw error;
+      print(error);
+      exit(64); // Exit code 64 indicates a usage error
+    });
+}
+
+class OnCommand extends Command {
+  @override
+  final name = 'on';
+  @override
+  final description = 'Switch light(s) on.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['on'] = 1;
+    manageLights(op);
+  }
+}
+
+class OffCommand extends Command {
+  @override
+  final name = 'off';
+  @override
+  final description = 'Switch light(s) off.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['on'] = 0;
+    manageLights(op);
+  }
+}
+
+class ToggleCommand extends Command {
+  @override
+  final name = 'toggle';
+  @override
+  final description = 'Toggle switch of each light. [Default]';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['on'] = light['on'] == 1 ? 0 : 1;
+    manageLights(op);
+  }
+}
+
+class IncreaseCommand extends Command {
+  @override
+  final name = 'increase';
+  @override
+  final description = 'Increase brightness or temperature of each light.';
+
+  IncreaseCommand() {
+    addSubcommand(IncreaseBrightnessCommand());
+    addSubcommand(IncreaseTemperatureCommand());
+  }
+}
+
+class IncreaseBrightnessCommand extends Command {
+  @override
+  final name = 'brightness';
+  @override
+  final description = 'Increase brightness of each light.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['brightness'] = light['brightness'] + 5;
+    manageLights(op);
+  }
+}
+
+class IncreaseTemperatureCommand extends Command {
+  @override
+  final name = 'temperature';
+  @override
+  final description = 'Increase brightness of each light.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['temperature'] = light['temperature'] + 5;
+    manageLights(op);
+  }
+}
+
+class DecreaseCommand extends Command {
+  @override
+  final name = 'decrease';
+  @override
+  final description = 'Decrease brightness or temperature of each light.';
+
+  DecreaseCommand() {
+    addSubcommand(DecreaseBrightnessCommand());
+    addSubcommand(DecreaseTemperatureCommand());
+  }
+}
+
+class DecreaseBrightnessCommand extends Command {
+  @override
+  final name = 'brightness';
+  @override
+  final description = 'Decrease brightness of each light.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['brightness'] = light['brightness'] - 5;
+    manageLights(op);
+  }
+}
+
+class DecreaseTemperatureCommand extends Command {
+  @override
+  final name = 'temperature';
+  @override
+  final description = 'Decrease brightness of each light.';
+
+  @override
+  Future<void> run() async {
+    op(light) => light['temperature'] = light['temperature'] - 5;
+    manageLights(op);
+  }
 }
