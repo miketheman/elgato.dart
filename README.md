@@ -55,18 +55,18 @@ git clone https://github.com/miketheman/elgato.dart.git
 # Enter the directory
 cd elgato.dart
 # Compile to native code:
-dart2native elgato.dart
+dart compile exe elgato.dart
 # Exceute the resulting binary
 ./elgato.exe
 ```
 
 You can control the desired output binary py passing `-o <output filename>`
-to `dart2native`.
+to `dart compile`.
 To place the binary somewhere in your `$PATH`, such as `/usr/local/bin` for
 simpler execution, use this command:
 
 ```shell
-dart2native elgato.dart -o /usr/local/bin/elgato
+dart compile exe -o /usr/local/bin/elgato elgato.dart
 ```
 
 And then you should be able to execute the program from anywhere via `elgato`.
