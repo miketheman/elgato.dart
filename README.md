@@ -26,7 +26,7 @@ down.
 
 Elgato provides a couple of interfaces - one is the [macOS Control Center][],
 and they provide [Android][] and [iOS][] apps, but I don't want to have
-pull my phone out every time I want to turn the ligths on and off, and the
+pull my phone out every time I want to turn the lights on and off, and the
 desktop interface is two clicks, and I'm lazy.
 
 There's also the [Elgato Stream Deck][] controllers, but even at the smallest
@@ -37,7 +37,7 @@ choice, and many people use them.
 ## How?
 
 This project is written in [Dart][], and can probably be compiled on any
-platform that Dart supports (Windows, Linux, macOS) - I have a Macbook, so
+platform that Dart supports (Windows, Linux, macOS) - I have macOS, so
 I've only tested it against that platform.
 
 There's an [open issue on Dart][] about code signing, so downloading compiled
@@ -56,7 +56,7 @@ git clone https://github.com/miketheman/elgato.dart.git
 cd elgato.dart
 # Compile to native code:
 dart compile exe elgato.dart
-# Exceute the resulting binary
+# Execute the resulting binary
 ./elgato.exe
 ```
 
@@ -75,7 +75,7 @@ Hooray! :tada:
 
 ## Who?
 
-This project was inpsired by [Brett Langdon][], who had figured out how to
+This project was inspired by [Brett Langdon][], who had figured out how to
 do this in a simpler, bash-friendly approach, while assigning a static IP
 address to the light, [curl][], and [jq][], something like this:
 
@@ -83,7 +83,7 @@ address to the light, [curl][], and [jq][], something like this:
 #!/usr/bin/env bash
 curl -qs http://192.168.1.10:9123/elgato/lights \
   | jq -c '{numberOfLights, lights:[.lights[] | {on: (if .on == 1 then 0 else 1 end), brightness, temperature}]}' \
-  | curl -XPUT -d @- -H "Content-Type: application/json" http://192.168.1.10:9123/elgato/lights
+  | curl -X PUT -d @- -H "Content-Type: application/json" http://192.168.1.10:9123/elgato/lights
 ```
 
 [Mike Fiedler][] took this idea further and wrote a single, self-contained
@@ -107,7 +107,7 @@ little more about Dart, and because it was fun!
   discover the IP of the light again and cache it. The cache is used to speed
   up subsequent invocations, since discovering an mDNS address can take a few
   seconds.
-* I can imagine consdering using DNS names instead of IP addresses, especially
+* I can imagine considering using DNS names instead of IP addresses, especially
   in a multi-light household where you wouldn't want one command to switch all
   lights, so setting up the lights to have a common string in their name might
   be smarter, and that could be set as a configuration value (no config file
