@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: multicast_dns
-      sha256: "3d46e7cc9ceff11decf8bf5b6ae8c43f5c0bb074f0735462db0b4502c3ae4302"
+      sha256: "80e54aba906a7cc68fdc6a201e76b135af27155e2f8e958181d85e2b73786591"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.2+3"
   node_preamble:
     dependency: transitive
     description:
