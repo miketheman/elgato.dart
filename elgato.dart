@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:http/http.dart' as http;
 import 'package:multicast_dns/multicast_dns.dart';
+import 'package:path/path.dart';
 
 // Store the results of the IP lookup locally to speed things up
 final cacheFile = join(HOME, ".elgato.dart.cache");
