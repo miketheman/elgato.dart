@@ -7,5 +7,6 @@ dependencies:
   dcli: ^2.0.0
   http: ^0.13.0
   multicast_dns: ^0.3.0
+  path: ^1.8.3
 dev_dependencies:
   lints: ^2.0.0
