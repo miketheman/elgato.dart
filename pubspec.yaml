@@ -1,7 +1,7 @@
 name: elgato
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '<4.0.0'
 
 dependencies:
   dcli: ^3.0.0
