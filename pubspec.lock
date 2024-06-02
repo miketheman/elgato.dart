@@ -85,34 +85,50 @@ packages:
     dependency: transitive
     description:
       name: csv
-      sha256: "63ed2871dd6471193dffc52c0e6c76fb86269c00244d244297abbb355c84a86e"
+      sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.1"
-  dart_console2:
+    version: "6.0.0"
+  dart_console:
     dependency: transitive
     description:
-      name: dart_console2
-      sha256: f7636b74f19910a20e3d03262190ad78546a33dfc972dba7bb9fe1530826269e
+      name: dart_console
+      sha256: eae9ddd7bb69477a6e9821c75d575874e290887da09292732a35ab510d1de713
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "4.1.0"
   dcli:
     dependency: "direct main"
     description:
       name: dcli
-      sha256: eb797595afab6aec4ce7a98635dc2cfc0d79b2e8059c624be52052ed8f68ff7c
+      sha256: "12ef06b5b99d092eb37d9598dbc0a49807abac40390085afd2be11f604607705"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "4.0.1"
+  dcli_common:
+    dependency: transitive
+    description:
+      name: dcli_common
+      sha256: aa61137f0e60817a6bc67f9ca0c709da222f9cef5bbfffb598051ac7c543557d
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   dcli_core:
     dependency: transitive
     description:
       name: dcli_core
-      sha256: "5736e57897a2aa062afa05f8cda7a69c7473d65b2fa4e200576c25f357f4a5e8"
+      sha256: d922658829d15a5c5726480b9848fa2916267148f4db6098597ca086e1dabe8a
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "4.0.0"
+  dcli_terminal:
+    dependency: transitive
+    description:
+      name: dcli_terminal
+      sha256: c738b3449bf72f4fc42eb746702546a3d321ec5d03be64ca975d2407ed35e59f
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   equatable:
     dependency: transitive
     description:
@@ -257,6 +273,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.2+6"
+  native_synchronization:
+    dependency: transitive
+    description:
+      name: native_synchronization
+      sha256: ff200fe0a64d733ff7d4dde2005271c297db81007604c8cd21037959858133ab
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   path:
     dependency: "direct main"
     description:
@@ -297,6 +321,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  runtime_named_locks:
+    dependency: transitive
+    description:
+      name: runtime_named_locks
+      sha256: "5fe859c1ddeeb595f6528596157191b628d85ba3137f0da327d92153604f2f6b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-beta.6"
+  runtime_native_semaphores:
+    dependency: transitive
+    description:
+      name: runtime_native_semaphores
+      sha256: bd5895d87f97543be6c9a5199b8a10483b9d6871327fe508ec89dbc2437c9220
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-beta.6"
   scope:
     dependency: transitive
     description:
@@ -309,10 +349,10 @@ packages:
     dependency: transitive
     description:
       name: settings_yaml
-      sha256: c568c79a1a2e48235d7f6cb06a78b15867879cc1995796dd324b9bc125e6b077
+      sha256: "415bc91cbcfe8b66b0945fdad8823b439ec9bd31591db6c1a4d2d07cab97899d"
       url: "https://pub.dev"
     source: hosted
-    version: "8.0.1"
+    version: "8.1.0"
   source_span:
     dependency: transitive
     description:
